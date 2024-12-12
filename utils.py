@@ -20,18 +20,41 @@ def upload_to_drive(file_path, file_name):
 
         # Authenticate Google Drive
         gauth = GoogleAuth()
-        gauth.LocalWebserverAuth()
+        gauth.LoadClientConfigFile("client_secrets.json")
+        gauth.LoadCredentialsFile("credentials.json")
+
+        if gauth.credentials is None:
+            print("No valid credentials found. Please authenticate...")
+            gauth.LocalWebserverAuth()  # Will prompt user to authenticate
+        elif gauth.access_token_expired:
+            print("Credentials expired. Re-authenticating...")
+            gauth.Refresh()
+        else:
+            print("Using existing credentials.")
+
+        # Save credentials for future use
+        gauth.SaveCredentialsFile("credentials.json")
+
+        # Create the Drive client
         drive = GoogleDrive(gauth)
 
         # Create and upload the file
         file = drive.CreateFile({'title': file_name})
         file.SetContentFile(file_path)
         file.Upload()
+        print(f"File {file_name} uploaded successfully to Google Drive.")
 
         # Make the file publicly accessible
+        print("Setting file permissions to public...")
         file.InsertPermission({'type': 'anyone', 'value': 'anyone', 'role': 'reader'})
+        print("File permissions set to public.")
 
-        # Return the public URL
-        return file['alternateLink']
+        # Generate the correct public URL
+        file.FetchMetadata()  # Refresh the file metadata to ensure permissions are updated
+        public_url = f"https://drive.google.com/uc?export=view&id={file['id']}"
+        print(f"Public URL: {public_url}")
+        return public_url
+
     except Exception as e:
-        raise Exception(f"Failed to upload file to Google Drive: {str(e)}")
+        print(f"Failed to upload file to Google Drive: {str(e)}")
+        raise
