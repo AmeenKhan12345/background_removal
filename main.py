@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from image_processor import process_image
 from utils import upload_to_drive
-
+import os
 app = FastAPI(title="Background Removal API", version="1.0")
 
 class ImageRequest(BaseModel):
