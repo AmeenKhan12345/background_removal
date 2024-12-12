@@ -4,7 +4,7 @@ from PIL import Image
 from rembg import remove
 import requests
 from io import BytesIO
-from app.utils import upload_to_drive  # Import the upload function from utils.py
+from utils import upload_to_drive  # Import the upload function from utils.py
 
 def process_image(image_url, bounding_box):
     """
