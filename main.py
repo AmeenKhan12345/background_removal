@@ -8,6 +8,11 @@ app = FastAPI(title="Background Removal API", version="1.0")
 class ImageRequest(BaseModel):
     image_url: str
     bounding_box: dict
+    
+@app.on_event("startup")
+async def startup_event():
+    port = os.getenv("PORT")
+    print(f"App will run on port: {port}")  # Debugging the port value
 
 @app.get("/")
 def read_root():
