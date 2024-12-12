@@ -9,6 +9,10 @@ class ImageRequest(BaseModel):
     image_url: str
     bounding_box: dict
 
+@app.get("/")
+def read_root():
+    return {"message": "Background removal API is live!"}
+
 @app.post("/remove-background")
 async def remove_background(request: ImageRequest, background_tasks: BackgroundTasks):
     try:
