@@ -31,3 +31,7 @@ async def remove_background(request: ImageRequest, background_tasks: BackgroundT
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
+if __name__ == "__main__":
+    # Get the port from the environment variable or use a default port (e.g., 8000)
+    port = int(os.getenv("PORT", 8000))  # Render automatically sets the PORT variable
+    uvicorn.run(app, host="0.0.0.0", port=port)
